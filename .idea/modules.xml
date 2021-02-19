@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="ProjectModuleManager">
-    <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Chef-Wumpus.iml" filepath="$PROJECT_DIR$/.idea/Chef-Wumpus.iml" />
-      <module fileurl="file://$PROJECT_DIR$/Scott's Hello World/Scott's Hello World.iml" filepath="$PROJECT_DIR$/Scott's Hello World/Scott's Hello World.iml" />
-    </modules>
-  </component>
-</project>
