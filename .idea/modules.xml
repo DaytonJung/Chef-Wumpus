@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Chef-Wumpus.iml" filepath="$PROJECT_DIR$/Chef-Wumpus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ChefWumpus/ChefWumpus.iml" filepath="$PROJECT_DIR$/ChefWumpus/ChefWumpus.iml" />
+    </modules>
+  </component>
+</project>
