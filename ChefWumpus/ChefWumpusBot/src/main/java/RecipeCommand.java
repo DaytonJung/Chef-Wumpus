@@ -23,9 +23,7 @@ public class RecipeCommand extends ListenerAdapter {
             command = command.substring(INGREDIENTS_START_INDEX);
             String[] ingredientList = command.split(", ");
             String ingredientUrl = convertIngredients(ingredientList);
-
             Recipe recipe = new Recipe(ingredientUrl);
-
             Response response = getClientResponse(BASE_URL + "findByIngredients?ingredients=" + ingredientUrl + "&ranking=1&ignorePantry=true" + API_KEY);
             JSONArray jArr = getJSONArray(response);
             if(jArr == null || jArr.length() == 0){

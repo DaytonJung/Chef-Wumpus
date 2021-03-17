@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/Chef-Wumpus.iml" filepath="$PROJECT_DIR$/Chef-Wumpus.iml" />
       <module fileurl="file://$PROJECT_DIR$/ChefWumpus/ChefWumpus.iml" filepath="$PROJECT_DIR$/ChefWumpus/ChefWumpus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ChefWumpus/ChefWumpusBot/ChefWumpusBot.iml" filepath="$PROJECT_DIR$/ChefWumpus/ChefWumpusBot/ChefWumpusBot.iml" />
     </modules>
   </component>
 </project>
