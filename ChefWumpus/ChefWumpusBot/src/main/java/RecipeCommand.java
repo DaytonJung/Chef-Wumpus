@@ -9,7 +9,7 @@ import java.io.IOException;
 public class RecipeCommand extends ListenerAdapter {
     private static final int INGREDIENTS_START_INDEX = 12;
     private static final String BASE_URL = "https://api.spoonacular.com/recipes/";
-    private static final String API_KEY = "&apiKey=ca4f364fc4e34482b69fc70527800a7c";
+    private static final String API_KEY = "&apiKey=51a7aa37f6ef405b99101b92bc70db68";
 
     /**
      * Sends  recipe links to discord servers based on user inputted ingredients
@@ -23,9 +23,12 @@ public class RecipeCommand extends ListenerAdapter {
             command = command.substring(INGREDIENTS_START_INDEX);
             String[] ingredientList = command.split(", ");
             String ingredientUrl = convertIngredients(ingredientList);
+
+            Recipe recipe = new Recipe(ingredientUrl);
+
             Response response = getClientResponse(BASE_URL + "findByIngredients?ingredients=" + ingredientUrl + "&ranking=1&ignorePantry=true" + API_KEY);
             JSONArray jArr = getJSONArray(response);
-            if(jArr == null){
+            if(jArr == null || jArr.length() == 0){
                 event.getChannel().sendMessage("Sorry! Couldn't find any recipes related to your ingredients.").queue();
                 return; //prematurely return since we couldn't find ANY available recipes
             }
