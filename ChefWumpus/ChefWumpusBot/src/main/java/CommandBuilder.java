@@ -42,9 +42,7 @@ public final class CommandBuilder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        finally {
-            return jArr;
-        }
+        return jArr;
     }
 
     public static JSONObject getJSONObject(Response response){
@@ -57,34 +55,33 @@ public final class CommandBuilder {
         return jObject;
     }
 
-    public static Response getClientResponse(String url){
+    public static Response getClientResponse(String url) throws IOException {
+
         OkHttpClient client = new OkHttpClient();
+
         Request request = new Request.Builder() //establishes connection with the database
                 .url(url)
                 .get()
                 .build();
-        Response response = null;
 
-        try { //gets JSON array of recipes from request
-            response = client.newCall(request).execute();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        finally {
-            return response;
-        }
-
+        return client.newCall(request).execute();
     }
+
     /**
      * Converts a ingredient list into an appropriate url-based ingredient string (e.g. green eggs,+ham,+cheese)
      * @param str An array of ingredients
      * @return returns a single url-based string
      */
     public static String convertIngredients(String[] str){
+
         String s = str[0];
+
         for(int i = 1; i < str.length; i++){
+
             s += ",+" + str[i];
+
         }
+
         return s;
     }
 
