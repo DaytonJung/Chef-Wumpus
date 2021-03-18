@@ -7,14 +7,17 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
-public class CommandBuilder {
+public final class CommandBuilder {
+
+    //Not instantiable
+    private CommandBuilder() {}
 
     /**
      * Gets an embed message based on the JSONObject (parameter) properties
      * @param jsonObject JSONObject passed to customize the embedded message
      * @return returns an embedded message
      */
-    public EmbedBuilder getEmbedMessage(JSONObject jsonObject){
+    public static EmbedBuilder getEmbedMessage(JSONObject jsonObject){
         EmbedBuilder e1 = new EmbedBuilder();
 
         String summary = jsonObject.get("summary").toString().replaceAll("\\<.*?\\>", ""); //removes any unwanted HTML tags from recipe summary
@@ -29,7 +32,7 @@ public class CommandBuilder {
         return e1;
     }
 
-    public JSONArray getJSONArray(Response response){
+    public static JSONArray getJSONArray(Response response){
         JSONArray jArr = null;
         try {
             if(response == null){
@@ -44,7 +47,7 @@ public class CommandBuilder {
         }
     }
 
-    public JSONObject getJSONObject(Response response){
+    public static JSONObject getJSONObject(Response response){
         JSONObject jObject = null;
         try {
             jObject = new JSONObject(response.body().string());
@@ -54,7 +57,7 @@ public class CommandBuilder {
         return jObject;
     }
 
-    public Response getClientResponse(String url){
+    public static Response getClientResponse(String url){
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder() //establishes connection with the database
                 .url(url)
@@ -77,13 +80,12 @@ public class CommandBuilder {
      * @param str An array of ingredients
      * @return returns a single url-based string
      */
-    public String convertIngredients(String[] str){
+    public static String convertIngredients(String[] str){
         String s = str[0];
         for(int i = 1; i < str.length; i++){
             s += ",+" + str[i];
         }
         return s;
     }
-
 
 }
