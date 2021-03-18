@@ -5,23 +5,11 @@ import javax.security.auth.login.LoginException;
 
 public class Main {
 
-    private static final String TOKEN = "ODE0MjY1Nzg5MTAzNzM0ODE0.YDbWHA.DuUpNkBCt3HENZNxd7bDLGIBTk4";
+    private static final String BOT_TOKEN = "ODE0MjY1Nzg5MTAzNzM0ODE0.YDbWHA.DuUpNkBCt3HENZNxd7bDLGIBTk4";
 
-    public static void main(String [] args){
+    public static void main(String [] args) throws LoginException {
 
-        JDABuilder builder = JDABuilder.createDefault(TOKEN);
-
-        JDA jda = null;
-
-        try{
-
-            jda = builder.build();
-
-        }catch(LoginException e){
-
-            e.printStackTrace();
-
-        }
+        JDA jda = JDABuilder.createDefault(BOT_TOKEN).build();
 
         jda.addEventListener(new ChefBot());
 

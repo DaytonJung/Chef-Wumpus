@@ -1,16 +1,39 @@
-import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import okhttp3.Response;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 
 public class ChefBot extends ListenerAdapter {
 
-    private static final String BASE_URL = "https://api.spoonacular.com/recipes/";
-    private static final String API_KEY = "&apiKey=51a7aa37f6ef405b99101b92bc70db68";
+    private static final String FIND_RECIPE_COMMAND = "-ingredients";
+    private static final String WHITELIST_COMMAND = "-whitelist";
+
+    private static class Command {
+
+        String type = "";
+        List<String> arguments = new ArrayList<>();
+
+        static Command getCommand(String rawString) {
+
+            Command command = new Command();
+
+            command.arguments.addAll(Arrays.asList(rawString.trim().replaceAll(",", " ").split(" ")));
+
+            command.arguments.removeIf(string -> string.replaceAll(" ", "").isEmpty());
+
+            if(!command.arguments.isEmpty()) {
+
+                command.type = command.arguments.remove(0);
+
+            }
+
+            return command;
+        }
+
+    }
 
     /**
      * Receives Messages from discord bot and handles them according to content
@@ -19,75 +42,79 @@ public class ChefBot extends ListenerAdapter {
     @Override
     public void onMessageReceived(MessageReceivedEvent event) {
 
-        String command = event.getMessage().getContentRaw().toLowerCase().trim();
+        String rawString = event.getMessage().getContentRaw();
 
-        int index = command.indexOf(" ");
+        if(!rawString.isEmpty()) {
 
-        //This command is not related to the bot
-        if(index == -1) {
+            Command command = Command.getCommand(rawString);
 
-            return;
+            switch(command.type) {
 
-        }
+                case FIND_RECIPE_COMMAND:
 
-        String commandType = command.substring(0, index);
+                    try{
 
-        String[] commandArgs = command
-                .substring(command.indexOf(" "))
-                .replaceAll(" ", "").replaceAll(",", " ")
-                .split(" ");
+                        for(Recipe recipe : RecipeBook.getRecipes(command.arguments, getNumRecipes(command.arguments))) {
 
-        switch(commandType) {
+                            event.getChannel().sendMessage(recipe.getMessageEmbed()).queue();
 
-            case "-ingredients":
+                        }
 
-                Recipe[] recipes;
-                Response nextResponse;
+                    }catch(IOException e) {
 
-                try{
+                        event.getChannel().sendMessage("Sorry! Couldn't find any recipes related to your ingredients.").queue();
 
-                    recipes = findRecipes(commandArgs);
+                        return;
 
-                    nextResponse = CommandBuilder.getClientResponse(recipes[0].getUrl());
+                    }
 
-                }catch(IOException e) {
+                    break;
 
-                    event.getChannel().sendMessage("Sorry! Couldn't find any recipes related to your ingredients.").queue();
+                case WHITELIST_COMMAND:
 
-                    return;
+                    break;
 
-                }
-
-                JSONObject jObject = CommandBuilder.getJSONObject(nextResponse);
-
-                EmbedBuilder e1 = CommandBuilder.getEmbedMessage(jObject);
-
-                event.getChannel().sendMessage(e1.build()).queue();
-
-                break;
+            }
 
         }
 
     }
 
-    private Recipe[] findRecipes(String[] ingredients) throws IOException {
+    private static final int DEFAULT_NUM_RECIPES = 1;
 
-        String ingredientUrl = CommandBuilder.convertIngredients(ingredients);
+    /**
+     * Attempts to find the number of recipes from a list of arguments. The last element is
+     * where the method will look
+     * @param arguments the arguments list
+     * @return the number of recipes to get if successful, otherwise DEFAULT_NUM_RECIPES
+     */
+    private int getNumRecipes(List<String> arguments) {
 
-        Response response = CommandBuilder.getClientResponse(BASE_URL + "findByIngredients?ingredients=" + ingredientUrl + "&ranking=1&ignorePantry=true" + API_KEY);
+        int numRecipes = DEFAULT_NUM_RECIPES;
 
-        JSONArray jArr = CommandBuilder.getJSONArray(response);
+        String lastArgument = null;
 
-        if(jArr == null || jArr.length() == 0) {
+        try{
 
-            //prematurely return since we couldn't find ANY available recipes
-            throw new IOException();
+            lastArgument = arguments.remove(arguments.size() - 1);
+
+            numRecipes = Integer.parseInt(lastArgument);
+
+        }catch(ArrayIndexOutOfBoundsException ignored) {
+
+            //Ignored
+
+        }catch(NumberFormatException e) {
+
+            if(lastArgument != null) {
+
+                arguments.add(lastArgument);
+
+            }
 
         }
 
-        String recipeUrl = BASE_URL + jArr.getJSONObject(0).get("id") + "/information?includeNutrition=false" + API_KEY;
-
-        return new Recipe[] { new Recipe(recipeUrl) };
+        return numRecipes;
     }
 
 }

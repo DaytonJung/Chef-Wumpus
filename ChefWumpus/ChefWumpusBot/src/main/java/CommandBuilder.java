@@ -9,7 +9,6 @@ import java.io.IOException;
 
 public final class CommandBuilder {
 
-    //Not instantiable
     private CommandBuilder() {}
 
     /**
@@ -18,71 +17,44 @@ public final class CommandBuilder {
      * @return returns an embedded message
      */
     public static EmbedBuilder getEmbedMessage(JSONObject jsonObject){
+
         EmbedBuilder e1 = new EmbedBuilder();
 
-        String summary = jsonObject.get("summary").toString().replaceAll("\\<.*?\\>", ""); //removes any unwanted HTML tags from recipe summary
+        String summary = jsonObject.get("summary").toString().replaceAll("\\<.*?\\>", ""); //Removes any unwanted HTML tags from recipe summary
+
         e1.setTitle(jsonObject.get("title").toString(), jsonObject.get("sourceUrl").toString());
         e1.setFooter(jsonObject.get("sourceName").toString());
         e1.setImage(jsonObject.get("image").toString());
 
-        if(summary.length() > 300)
+        if(summary.length() > 300) {
+
             summary = summary.substring(0, 300);
 
+        }
+
         e1.setDescription(summary + "...");
+
         return e1;
     }
 
-    public static JSONArray getJSONArray(Response response){
-        JSONArray jArr = null;
-        try {
-            if(response == null){
-                throw new IOException("No Recipes!");
-            }
-            jArr = new JSONArray(response.body().string());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return jArr;
+    public static JSONArray getJSONArray(Response response) throws IOException {
+
+        return new JSONArray(response.body().string());
     }
 
-    public static JSONObject getJSONObject(Response response){
-        JSONObject jObject = null;
-        try {
-            jObject = new JSONObject(response.body().string());
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        return jObject;
+    public static JSONObject getJSONObject(Response response) throws IOException {
+
+        return new JSONObject(response.body().string());
     }
 
     public static Response getClientResponse(String url) throws IOException {
 
-        OkHttpClient client = new OkHttpClient();
-
-        Request request = new Request.Builder() //establishes connection with the database
+        Request request = new Request.Builder() //Establishes connection with the database
                 .url(url)
                 .get()
                 .build();
 
-        return client.newCall(request).execute();
-    }
-
-    /**
-     * Converts a ingredient list into an appropriate url-based ingredient string (e.g. green eggs,+ham,+cheese)
-     * @param str An array of ingredients
-     * @return returns a single url-based string
-     */
-    public static String convertIngredients(String[] str){
-
-        String s = str[0];
-
-        for(int i = 1; i < str.length; i++){
-
-            s += ",+" + str[i];
-
-        }
-
-        return s;
+        return new OkHttpClient().newCall(request).execute();
     }
 
 }
