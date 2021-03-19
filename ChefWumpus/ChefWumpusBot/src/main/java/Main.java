@@ -1,4 +1,3 @@
-import net.dv8tion.jda.api.JDA;
 import net.dv8tion.jda.api.JDABuilder;
 
 import javax.security.auth.login.LoginException;
@@ -9,9 +8,11 @@ public class Main {
 
     public static void main(String [] args) throws LoginException {
 
-        JDA jda = JDABuilder.createDefault(BOT_TOKEN).build();
+        JDABuilder jdaBuilder = JDABuilder.createDefault(BOT_TOKEN);
 
-        jda.addEventListener(new ChefBot());
+        jdaBuilder.addEventListeners(new ChefBot());
+
+        jdaBuilder.build();
 
     }
 
