@@ -3,44 +3,42 @@
   <ID>JAVA</ID>
   <OriginalElement>ChefBot</OriginalElement>
   <nodes>
-    <node x="0.0" y="165.0">RecipeBook</node>
-    <node x="282.0" y="79.0">Recipe</node>
+    <node x="230.0" y="165.0">RecipeBook</node>
+    <node x="0.0" y="79.0">Recipe</node>
     <node x="0.0" y="457.0">ChefBot</node>
     <node x="46.0" y="668.0">ChefBot.Command</node>
     <node x="356.0" y="457.0">CommandBuilder</node>
     <node x="697.0" y="457.0">Main</node>
-    <node x="291.0" y="0.0">java.io.Serializable</node>
+    <node x="73.0" y="0.0">java.io.Serializable</node>
   </nodes>
   <notes>
-    <note x="22.0" y="1.0">
+    <note x="383.0" y="1.0">
       <node>RecipeBook</node>
       <value>ArrayList</value>
       <edge>
-        <point x="-65.5" y="-80.5" />
+        <point x="65.5" y="-80.5" />
         <point x="0.0" y="13.5" />
       </edge>
     </note>
   </notes>
   <edges>
-    <edge source="Recipe" target="java.io.Serializable">
-      <point x="0.0" y="-166.5" />
-      <point x="32.0" y="14.5" />
-    </edge>
     <edge source="ChefBot.Command" target="ChefBot">
       <point x="0.0" y="-58.5" />
       <point x="0.0" y="80.5" />
     </edge>
-    <edge source="RecipeBook" target="java.io.Serializable">
-      <point x="65.5" y="-80.5" />
-      <point x="196.5" y="54.0" />
-      <point x="323.0" y="54.0" />
+    <edge source="Recipe" target="java.io.Serializable">
+      <point x="0.0" y="-166.5" />
       <point x="-32.0" y="14.5" />
     </edge>
+    <edge source="RecipeBook" target="java.io.Serializable">
+      <point x="-65.5" y="-80.5" />
+      <point x="295.5" y="54.0" />
+      <point x="169.0" y="54.0" />
+      <point x="32.0" y="14.5" />
+    </edge>
   </edges>
-  <settings layout="Hierarchic Group" zoom="0.8322981366459627" x="421.5" y="392.5" />
-  <SelectedNodes>
-    <node>ChefBot</node>
-  </SelectedNodes>
+  <settings layout="Hierarchic Group" zoom="1.5" x="300.3411588411589" y="386.92857142857156" />
+  <SelectedNodes />
   <Categories>
     <Category>Fields</Category>
     <Category>Constructors</Category>

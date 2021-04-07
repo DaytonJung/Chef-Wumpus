@@ -1,9 +1,13 @@
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.User;
+import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.annotation.Nonnull;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -38,6 +42,24 @@ public class ChefBot extends ListenerAdapter {
             }
 
             return command;
+        }
+
+    }
+
+    private boolean isChefBot(GenericMessageEvent event) {
+
+        User user = event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor();
+
+        return user.isBot() && user.getName().equals("Chef Wumpus");
+    }
+
+    @Override
+    public void onMessageReactionAdd(@Nonnull MessageReactionAddEvent event) {
+
+        if(isChefBot(event)) {
+
+            event.getChannel().sendMessage("Chef Bot").queue();
+
         }
 
     }
