@@ -1,5 +1,8 @@
+import net.dv8tion.jda.api.EmbedBuilder;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
+import org.json.JSONArray;
+import org.json.JSONObject;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -8,8 +11,12 @@ import java.util.List;
 
 public class ChefBot extends ListenerAdapter {
 
+    private static final String BASE_URL = "https://api.spoonacular.com/recipes/";
+    private static final String API_KEY = "&apiKey=51a7aa37f6ef405b99101b92bc70db68";
+
     private static final String FIND_RECIPE_COMMAND = "-ingredients";
     private static final String WHITELIST_COMMAND = "-whitelist";
+    private static final String RANDOM_RECIPE_COMMAND = "-random";
 
     private static class Command {
 
@@ -71,6 +78,37 @@ public class ChefBot extends ListenerAdapter {
                     break;
 
                 case WHITELIST_COMMAND:
+
+                    break;
+
+                case RANDOM_RECIPE_COMMAND:
+
+                    int num = getNumRecipes(command.arguments);
+
+                    JSONObject jsonObject;
+                    JSONArray jArr;
+
+                    try {
+
+                        jsonObject = CommandBuilder.getJSONObject(CommandBuilder.getClientResponse(BASE_URL + "random?number=" + num + API_KEY));
+
+                        jArr = new JSONArray(jsonObject.get("recipes").toString());
+
+                    } catch (IOException e) {
+
+                        event.getChannel().sendMessage("Sorry! Couldn't find any random recipes at the moment.").queue();
+
+                        return;
+
+                    }
+
+                    for(int i = 0; i < jArr.length(); i++){
+
+                        EmbedBuilder message = CommandBuilder.getEmbedMessage((JSONObject) jArr.get(i));
+
+                        event.getChannel().sendMessage(message.build()).queue();
+
+                    }
 
                     break;
 
