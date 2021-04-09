@@ -20,7 +20,7 @@ public class ChefBot extends ListenerAdapter {
 
     private static final String FIND_RECIPE_COMMAND = "-ingredients";
     private static final String WHITELIST_COMMAND = "-whitelist";
-    private static final String RANDOM_RECIPE_COMMAND = "-random";
+    private static final String RANDOM_RECIPE_COMMAND = "-chefrandom";
 
     private static class Command {
 
@@ -54,11 +54,13 @@ public class ChefBot extends ListenerAdapter {
     }
 
     @Override
-    public void onMessageReactionAdd(@Nonnull MessageReactionAddEvent event) {
+    public void onMessageReactionAdd(MessageReactionAddEvent event) {
 
         if(isChefBot(event)) {
 
-            event.getChannel().sendMessage("Chef Bot").queue();
+            event.getChannel().retrieveMessageById(event.getMessageId()).queue(message -> {
+                event.getChannel().sendMessage(message.getEmbeds().get(0).getDescription()).queue();
+            });
 
         }
 
@@ -105,7 +107,7 @@ public class ChefBot extends ListenerAdapter {
 
                 case RANDOM_RECIPE_COMMAND:
 
-                    int num = getNumRecipes(command.arguments);
+                    int num = Integer.min(10, getNumRecipes(command.arguments));
 
                     JSONObject jsonObject;
                     JSONArray jArr;
