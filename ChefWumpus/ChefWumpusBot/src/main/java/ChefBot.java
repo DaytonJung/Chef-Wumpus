@@ -1,8 +1,11 @@
+import net.dv8tion.jda.api.entities.Message;
 import net.dv8tion.jda.api.entities.MessageEmbed;
 import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.message.GenericMessageEvent;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.message.react.GenericMessageReactionEvent;
 import net.dv8tion.jda.api.events.message.react.MessageReactionAddEvent;
+import net.dv8tion.jda.api.events.message.react.MessageReactionRemoveEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -88,6 +91,11 @@ public class ChefBot implements Serializable {
             }
 
             @Override
+            public void onMessageReactionRemove(@Nonnull MessageReactionRemoveEvent event) {
+                ChefBot.this.onMessageReactionRemove(event);
+            }
+
+            @Override
             public void onMessageReceived(@Nonnull MessageReceivedEvent event) {
 
                 ChefBot.this.onMessageReceived(event);
@@ -110,9 +118,14 @@ public class ChefBot implements Serializable {
         return user.isBot() && user.getName().equals("Chef Wumpus");
     }
 
+    private boolean isChefReaction(GenericMessageReactionEvent event) {
+
+        return event.getReactionEmote().toString().equals("RE:U+1f468U+200dU+1f373");
+    }
+
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
 
-        if(isChefBot(event)) {
+        if(isChefBot(event) && isChefReaction(event)) {
 
             String userId = event.getUserId();
 
@@ -126,16 +139,44 @@ public class ChefBot implements Serializable {
                     .complete()
                     .getEmbeds().get(0);
 
-            recipeBookHashMap.get(event.getUserId()).add(new Recipe(
-                    messageEmbed.getDescription(),
-                    messageEmbed.getTitle(),
-                    messageEmbed.getUrl(),
-                    messageEmbed.getImage().getUrl(),
-                    messageEmbed.getFooter().getText()));
+            Recipe recipe = buildRecipe(messageEmbed);
+
+            recipeBookHashMap.get(event.getUserId()).add(recipe);
 
         }
 
     }
+
+    public void onMessageReactionRemove(MessageReactionRemoveEvent event){
+
+        if(isChefBot(event) && isChefReaction(event)) {
+
+            String userId = event.getUserId();
+
+            MessageEmbed messageEmbed = event.getChannel().retrieveMessageById(event.getMessageId())
+                    .complete()
+                    .getEmbeds().get(0);
+
+            RecipeBook recipeBook = recipeBookHashMap.get(userId);
+
+            Recipe recipe = buildRecipe(messageEmbed);
+
+            recipeBook.remove(recipe);
+
+        }
+
+    }
+
+    private Recipe buildRecipe(MessageEmbed messageEmbed) {
+
+        return new Recipe(messageEmbed.getDescription(),
+                messageEmbed.getTitle(),
+                messageEmbed.getUrl(),
+                messageEmbed.getImage().getUrl(),
+                messageEmbed.getFooter().getText());
+
+    }
+
 
     /**
      * Receives Messages from discord bot and handles them according to content
@@ -177,7 +218,7 @@ public class ChefBot implements Serializable {
 
                         for(Recipe recipe : RecipeBook.getRecipes(command.arguments, getNumRecipes(command.arguments))) {
 
-                            event.getChannel().sendMessage(recipe.getMessageEmbed()).queue();
+                            sendMessage(event, recipe.getMessageEmbed());
 
                         }
 
@@ -201,7 +242,7 @@ public class ChefBot implements Serializable {
 
                         for(MessageEmbed messageEmbed : recipeBookHashMap.get(userID).getRecipeMessages()) {
 
-                            event.getChannel().sendMessage(messageEmbed).queue();
+                            sendMessage(event, messageEmbed);
 
                         }
 
@@ -232,7 +273,7 @@ public class ChefBot implements Serializable {
 
                     } catch (IOException e) {
 
-                        event.getChannel().sendMessage("Sorry! Couldn't find any random recipes at the moment.").queue();
+                        sendMessage(event, "\"Sorry! Couldn't find any random recipes at the moment.\"");
 
                         return;
 
@@ -240,7 +281,7 @@ public class ChefBot implements Serializable {
 
                     for(int i = 0; i < jArr.length(); i++){
 
-                        event.getChannel().sendMessage(CommandBuilder.getEmbedMessage((JSONObject) jArr.get(i))).queue();
+                        sendMessage(event, CommandBuilder.getEmbedMessage((JSONObject) jArr.get(i)));
 
                     }
 
@@ -253,6 +294,12 @@ public class ChefBot implements Serializable {
     }
 
     private static void sendMessage(GenericMessageEvent event, String message) {
+
+        event.getChannel().sendMessage(message).queue();
+
+    }
+
+    private static void sendMessage(GenericMessageEvent event, MessageEmbed message) {
 
         event.getChannel().sendMessage(message).queue();
 
