@@ -7,17 +7,26 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
 
 public class Recipe implements Serializable {
 
     private String url;
     private String name;
-    private String iUrl;
     private List<String> ingredientList = new ArrayList<>();
     private String imageUrl;
     private String summary;
-    private JSONObject jObject;
+    private transient JSONObject jObject;
+    private String sourceName;
+
+    public Recipe(String summary, String name, String url, String imageUrl, String sourceName) {
+
+        this.summary = summary;
+        this.name = name;
+        this.url = url;
+        this.imageUrl = imageUrl;
+        this.sourceName = sourceName;
+
+    }
 
     public Recipe(String url) throws IOException {
 
@@ -31,7 +40,7 @@ public class Recipe implements Serializable {
 
         summary = jObject.get("summary").toString().replaceAll("\\<.*?\\>", "");
 
-        iUrl = url.replace("information","ingredientWidget.json");
+        String iUrl = url.replace("information","ingredientWidget.json");
 
         buildIngredientList(iUrl);
 
@@ -39,7 +48,7 @@ public class Recipe implements Serializable {
 
     public final MessageEmbed getMessageEmbed() {
 
-        return CommandBuilder.getEmbedMessage(jObject).build();
+        return CommandBuilder.getEmbedMessage(jObject);
     }
 
     /**
@@ -111,6 +120,37 @@ public class Recipe implements Serializable {
     public final List<String> getIngredientList(){
 
         return ingredientList;
+    }
+
+    public String getSourceName() {
+
+        return sourceName;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+
+        if(obj instanceof Recipe) {
+
+            Recipe recipe = (Recipe)obj;
+
+            return recipe.url.equals(url);
+
+        }
+
+        return false;
+    }
+
+    @Override
+    public String toString() {
+
+        return name;
+    }
+
+    @Override
+    public int hashCode() {
+
+        return url.hashCode();
     }
 
 }

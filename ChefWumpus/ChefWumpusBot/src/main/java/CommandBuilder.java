@@ -1,4 +1,5 @@
 import net.dv8tion.jda.api.EmbedBuilder;
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
@@ -16,7 +17,7 @@ public final class CommandBuilder {
      * @param jsonObject JSONObject passed to customize the embedded message
      * @return returns an embedded message
      */
-    public static EmbedBuilder getEmbedMessage(JSONObject jsonObject){
+    public static MessageEmbed getEmbedMessage(JSONObject jsonObject){
 
         EmbedBuilder e1 = new EmbedBuilder();
 
@@ -34,7 +35,19 @@ public final class CommandBuilder {
 
         e1.setDescription(summary + "...");
 
-        return e1;
+        return e1.build();
+    }
+
+    public static MessageEmbed getEmbedMessage(Recipe recipe){
+
+        EmbedBuilder e1 = new EmbedBuilder();
+
+        e1.setTitle(recipe.getName(), recipe.getUrl());
+        e1.setDescription(recipe.getSummary());
+        e1.setImage(recipe.getImageUrl());
+        e1.setFooter(recipe.getSourceName());
+
+        return e1.build();
     }
 
     public static JSONArray getJSONArray(Response response) throws IOException {

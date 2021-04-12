@@ -1,12 +1,13 @@
+import net.dv8tion.jda.api.entities.MessageEmbed;
 import okhttp3.Response;
 import org.json.JSONArray;
 
 import java.io.IOException;
-import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
 
-public class RecipeBook extends ArrayList<Recipe> implements Serializable {
+public class RecipeBook extends HashSet<Recipe> {
 
     private static final String BASE_URL = "https://api.spoonacular.com/recipes/";
     private static final String API_KEY = "&apiKey=51a7aa37f6ef405b99101b92bc70db68";
@@ -61,6 +62,21 @@ public class RecipeBook extends ArrayList<Recipe> implements Serializable {
         }
 
         return "";
+    }
+
+
+
+    public List<MessageEmbed> getRecipeMessages() {
+
+        List<MessageEmbed> messageEmbeds = new ArrayList<>();
+
+        for(Recipe recipe : this) {
+
+            messageEmbeds.add(CommandBuilder.getEmbedMessage(recipe));
+
+        }
+
+        return messageEmbeds;
     }
 
 }
