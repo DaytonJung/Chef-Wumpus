@@ -12,15 +12,29 @@ import java.util.Scanner;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
-
+/**
+ * Main Class
+ * @author Group 2
+ */
 public class Main {
-
+    /**
+     * Constant Save Location
+     */
     private static final File SAVE_LOCATION = new File(".\\ChefWumpus\\ChefWumpusBot\\src\\main\\java\\chefbot.txt");
-
+    /**
+     * Constant Bot_Token
+     */
     private static final String BOT_TOKEN = "ODE0MjY1Nzg5MTAzNzM0ODE0.YDbWHA.DuUpNkBCt3HENZNxd7bDLGIBTk4";
-
+    /**
+     * Creation of a ChefBot object
+     */
     private static ChefBot chefBot;
 
+    /**
+     * Main method
+     * @param args
+     * @throws LoginException
+     */
     public static void main(String[] args) throws LoginException {
 
         JDABuilder jdaBuilder = JDABuilder.createDefault(BOT_TOKEN);
@@ -61,6 +75,11 @@ public class Main {
 
     }
 
+    /**
+     * Checks if it can save the object.
+     * @param saveLocation
+     * @return
+     */
     public static boolean save(File saveLocation) {
 
         try{

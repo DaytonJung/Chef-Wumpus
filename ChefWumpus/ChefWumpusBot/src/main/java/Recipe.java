@@ -7,9 +7,14 @@ import java.io.IOException;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
-
+/**
+ * Recipe class that generates the recipe
+ * @author Group 2
+ */
 public class Recipe implements Serializable {
-
+    /**
+     * Declaration of variables
+     */
     private String url;
     private String name;
     private List<String> ingredientList = new ArrayList<>();
@@ -18,6 +23,14 @@ public class Recipe implements Serializable {
     private transient JSONObject jObject;
     private String sourceName;
 
+    /**
+     * Constructor of Recipe
+     * @param summary of the recipe
+     * @param name of the recipe
+     * @param url of the recipe website
+     * @param imageUrl of the recipe
+     * @param sourceName of the recipe
+     */
     public Recipe(String summary, String name, String url, String imageUrl, String sourceName) {
 
         this.summary = summary;
@@ -28,6 +41,11 @@ public class Recipe implements Serializable {
 
     }
 
+    /**
+     * Constructor with only the url
+     * @param url of the recipe website
+     * @throws IOException
+     */
     public Recipe(String url) throws IOException {
 
         this.url = url;
@@ -46,6 +64,10 @@ public class Recipe implements Serializable {
 
     }
 
+    /**
+     * Calls CommandBuilder for getEmbedMessage
+     * @return the embed message
+     */
     public final MessageEmbed getMessageEmbed() {
 
         return CommandBuilder.getEmbedMessage(jObject);
@@ -97,36 +119,65 @@ public class Recipe implements Serializable {
 
     }
 
+    /**
+     * getter for the url
+     * @return the url
+     */
     public final String getUrl() {
 
         return url;
     }
 
+    /**
+     * getter for the name
+     * @return the name
+     */
     public final String getName() {
 
         return name;
     }
 
+    /**
+     * getter for the imageUrl
+     * @return the imageUrl
+     */
     public final String getImageUrl() {
 
         return imageUrl;
     }
 
+    /**
+     * Getter for the summary
+     * @return the summary
+     */
     public final String getSummary() {
 
         return summary;
     }
 
+    /**
+     * Getter for the Ingredient list
+     * @return the ingredient list
+     */
     public final List<String> getIngredientList(){
 
         return ingredientList;
     }
 
+    /**
+     * Getter for the source Name
+     * @return the source name
+     */
     public String getSourceName() {
 
         return sourceName;
     }
 
+    /**
+     *Boolean to check if the object is a recipe.
+     * @param obj validity
+     * @return boolean
+     */
     @Override
     public boolean equals(Object obj) {
 
@@ -141,12 +192,20 @@ public class Recipe implements Serializable {
         return false;
     }
 
+    /**
+     * toString method
+     * @return the name
+     */
     @Override
     public String toString() {
 
         return name;
     }
 
+    /**
+     * gets the hash code of the url.
+     * @return the hash code
+     */
     @Override
     public int hashCode() {
 

@@ -8,8 +8,14 @@ import org.json.JSONObject;
 
 import java.io.IOException;
 
+/**
+ * Class command Builder that builds commands
+ * @author Group 2
+ */
 public final class CommandBuilder {
-
+    /**
+     * Cannot create instance
+     */
     private CommandBuilder() {}
 
     /**
@@ -38,6 +44,11 @@ public final class CommandBuilder {
         return e1.build();
     }
 
+    /**
+     * Gets the built link to the recipe.
+     * @param recipe for the user
+     * @return link to recipe
+     */
     public static MessageEmbed getEmbedMessage(Recipe recipe){
 
         EmbedBuilder e1 = new EmbedBuilder();
@@ -50,16 +61,34 @@ public final class CommandBuilder {
         return e1.build();
     }
 
+    /**
+     * Gets a new JSONArray
+     * @param response to user
+     * @return JSONArray
+     * @throws IOException
+     */
     public static JSONArray getJSONArray(Response response) throws IOException {
 
         return new JSONArray(response.body().string());
     }
 
+    /**
+     * Getter for the JSON object
+     * @param response to user
+     * @return JSONObject
+     * @throws IOException
+     */
     public static JSONObject getJSONObject(Response response) throws IOException {
 
         return new JSONObject(response.body().string());
     }
 
+    /**
+     * Getter for the client response
+     * @param url of recipe website
+     * @return the url
+     * @throws IOException
+     */
     public static Response getClientResponse(String url) throws IOException {
 
         Request request = new Request.Builder() //Establishes connection with the database

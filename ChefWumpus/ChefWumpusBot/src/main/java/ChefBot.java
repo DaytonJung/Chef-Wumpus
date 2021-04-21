@@ -21,9 +21,14 @@ import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
-
+/**
+ * Class that builds the bot, and contains methods integral to the bots functions.
+ * @author Group 2
+ */
 public class ChefBot implements Serializable {
-
+    /**
+     *Declaration of Strings used later
+     */
     private static final String BASE_URL = "https://api.spoonacular.com/recipes/";
     private static final String API_KEY = "&apiKey=51a7aa37f6ef405b99101b92bc70db68";
 
@@ -32,6 +37,10 @@ public class ChefBot implements Serializable {
     private static final String RANDOM_RECIPE_COMMAND = "-chefrandom";
     private static final String RECIPE_BOOK = "-recipebook";
 
+    /**
+     * Class that returns a command from the user.
+     * @author Group 2
+     */
     private static class Command {
 
         String type = "";
@@ -56,11 +65,19 @@ public class ChefBot implements Serializable {
 
     }
 
+    /**
+     * A listener adapter used for reading messages from the discord chat.
+     */
     private transient ListenerAdapter listenerAdapter;
-
+    /**
+     * Hash maps used for the recipe book and black lists.
+     */
     private HashMap<String, RecipeBook> recipeBookHashMap;
     private HashMap<String, Set<String>> blackListHashMap;
 
+    /**
+     * ChefBot constructor method.
+     */
     public ChefBot() {
 
         buildListenerAdapter();
@@ -71,6 +88,12 @@ public class ChefBot implements Serializable {
 
     }
 
+    /**
+     * Read Object class used in the buildListenerAdapter method
+     * @param objectInputStream user input
+     * @throws ClassNotFoundException
+     * @throws IOException
+     */
     private void readObject(ObjectInputStream objectInputStream) throws ClassNotFoundException, IOException {
 
         objectInputStream.defaultReadObject();
@@ -79,6 +102,9 @@ public class ChefBot implements Serializable {
 
     }
 
+    /**
+     * Class that contains the various actions the bot should take if activated in the discord server.
+     */
     private void buildListenerAdapter() {
 
         listenerAdapter = new ListenerAdapter() {
@@ -106,11 +132,20 @@ public class ChefBot implements Serializable {
 
     }
 
+    /**
+     * Getter for the listenerAdapter
+     * @return listenerAdapter
+     */
     public ListenerAdapter getListenerAdapter() {
 
         return listenerAdapter;
     }
 
+    /**
+     * Boolean to check if the message cam from Chef Wumpus
+     * @param event message
+     * @return is chef wumpus
+     */
     private boolean isChefBot(GenericMessageEvent event) {
 
         User user = event.getChannel().retrieveMessageById(event.getMessageId()).complete().getAuthor();
@@ -118,11 +153,20 @@ public class ChefBot implements Serializable {
         return user.isBot() && user.getName().equals("Chef Wumpus");
     }
 
+    /**
+     * Checks if the reaction is to a Chef Wumpus message.
+     * @param event reaction
+     * @return boolean if it is a reaction
+     */
     private boolean isChefReaction(GenericMessageReactionEvent event) {
 
         return event.getReactionEmote().toString().equals("RE:U+1f468U+200dU+1f373");
     }
 
+    /**
+     * Adds recipe to the recipeBook
+     * @param event reaction added
+     */
     public void onMessageReactionAdd(MessageReactionAddEvent event) {
 
         if(isChefBot(event) && isChefReaction(event)) {
@@ -147,6 +191,10 @@ public class ChefBot implements Serializable {
 
     }
 
+    /**
+     * Removes recipe from the recipeBook
+     * @param event reaction removed
+     */
     public void onMessageReactionRemove(MessageReactionRemoveEvent event){
 
         if(isChefBot(event) && isChefReaction(event)) {
@@ -167,6 +215,11 @@ public class ChefBot implements Serializable {
 
     }
 
+    /**
+     * Builds the recipe based on user inputs
+     * @param messageEmbed recipe that is sent to the channel
+     * @return built recipe
+     */
     private Recipe buildRecipe(MessageEmbed messageEmbed) {
 
         return new Recipe(messageEmbed.getDescription(),
@@ -293,18 +346,31 @@ public class ChefBot implements Serializable {
 
     }
 
+    /**
+     * Sends message to the discord channel
+     * @param event to be sent to the channel
+     * @param message to be sent back to the discord chat
+     */
     private static void sendMessage(GenericMessageEvent event, String message) {
 
         event.getChannel().sendMessage(message).queue();
 
     }
 
+    /**
+     * Overloaded sendMessage
+     * @param event to be sent to the channel
+     * @param message to be sent back to the discord chat
+     */
     private static void sendMessage(GenericMessageEvent event, MessageEmbed message) {
 
         event.getChannel().sendMessage(message).queue();
 
     }
 
+    /**
+     * The default number of recipes constant
+     */
     private static final int DEFAULT_NUM_RECIPES = 1;
 
     /**
@@ -342,6 +408,12 @@ public class ChefBot implements Serializable {
         return numRecipes;
     }
 
+    /**
+     * Modifies the blacklist based on which user is doing the command.
+     * @param user on the channel
+     * @param ingredients list
+     * @return the blacklist
+     */
     private String modifyBlacklist(User user, List<String> ingredients) {
 
         String userID = user.getId();
